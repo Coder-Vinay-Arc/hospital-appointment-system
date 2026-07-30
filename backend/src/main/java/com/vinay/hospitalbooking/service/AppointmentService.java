@@ -11,6 +11,8 @@ import com.vinay.hospitalbooking.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 import com.vinay.hospitalbooking.exception.ResourceNotFoundException;
 
+import java.util.List;
+
 @Service
 public class AppointmentService {
 
@@ -47,5 +49,14 @@ public class AppointmentService {
         appointment.setPatient(patient);
 
         return appointmentRepository.save(appointment);
+    }
+    public List<Appointment> getAllAppointments() {
+        return appointmentRepository.findAll();
+    }
+
+    public Appointment getAppointmentById(Long id) {
+        return appointmentRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Appointment not found"));
     }
 }
