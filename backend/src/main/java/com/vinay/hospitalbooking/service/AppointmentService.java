@@ -59,4 +59,36 @@ public class AppointmentService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Appointment not found"));
     }
+
+    public void deleteAppointment(Long id) {
+
+        if (!appointmentRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Appointment not found");
+        }
+
+        appointmentRepository.deleteById(id);
+    }
+
+    public Appointment updateAppointment(Long id, AppointmentRequest request) {
+
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Appointment not found"));
+
+        Doctor doctor = doctorRepository.findById(request.getDoctorId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Doctor not found"));
+
+        Patient patient = patientRepository.findById(request.getPatientId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Patient not found"));
+
+        appointment.setAppointmentDate(request.getAppointmentDate());
+        appointment.setAppointmentTime(request.getAppointmentTime());
+        appointment.setStatus(request.getStatus());
+        appointment.setDoctor(doctor);
+        appointment.setPatient(patient);
+
+        return appointmentRepository.save(appointment);
+    }
 }
