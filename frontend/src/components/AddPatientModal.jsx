@@ -4,6 +4,7 @@ import { addPatient, updatePatient } from "../services/patientService";
 import { toast } from "react-toastify";
 
 
+
 function AddPatientModal({
   onClose,
   loadPatients,
