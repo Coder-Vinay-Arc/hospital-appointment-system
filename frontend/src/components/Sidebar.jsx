@@ -5,7 +5,7 @@ import { FaUsers, FaCalendarAlt, FaHome } from "react-icons/fa";
 function Sidebar() {
   return (
     <div className="w-64 min-h-screen bg-blue-600 text-white p-5">
-      <h1 className="text-2xl font-bold mb-8">HMS</h1>
+      <h1 className="text-2xl font-bold mb-8">HAS</h1>
 
       <nav className="flex flex-col gap-3">
         <NavLink

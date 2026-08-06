@@ -24,6 +24,7 @@ function AddAppointmentModal({
   const [appointmentTime, setAppointmentTime] = useState("");
 
   const [status, setStatus] = useState("Pending");
+  const [errors, setErrors] = useState({});
 
   const loadDoctors = async () => {
     try {
@@ -43,7 +44,40 @@ function AddAppointmentModal({
     }
   };
 
+  const validate = () => {
+    const newErrors = {};
+    if (!doctorId) {
+      newErrors.doctorId = "Doctor selection is required";
+    }
+    if (!patientId) {
+      newErrors.patientId = "Patient selection is required";
+    }
+    if (!appointmentDate) {
+      newErrors.appointmentDate = "Appointment date is required";
+    } else {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const [year, month, day] = appointmentDate.split("-").map(Number);
+      const selectedDate = new Date(year, month - 1, day);
+      if (selectedDate < today) {
+        newErrors.appointmentDate = "Appointment date cannot be in the past";
+      }
+    }
+    if (!appointmentTime) {
+      newErrors.appointmentTime = "Time slot is required";
+    }
+    setErrors(newErrors);
+    return newErrors;
+  };
+
   const handleSubmit = async () => {
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      const firstError = Object.values(validationErrors)[0];
+      toast.error(firstError);
+      return;
+    }
+
     try {
       const appointmentData = {
         appointmentDate,
@@ -104,6 +138,7 @@ function AddAppointmentModal({
       setAppointmentTime("");
       setStatus("Pending");
     }
+    setErrors({});
   }, [appointment, doctors, patients]);
 
   useEffect(() => {
@@ -138,8 +173,13 @@ function AddAppointmentModal({
 
           <select
             value={doctorId}
-            onChange={(e) => setDoctorId(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => {
+              setDoctorId(e.target.value);
+              if (errors.doctorId) setErrors((prev) => ({ ...prev, doctorId: null }));
+            }}
+            className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+              errors.doctorId ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+            }`}
           >
             <option value="">Select Doctor</option>
 
@@ -149,14 +189,20 @@ function AddAppointmentModal({
               </option>
             ))}
           </select>
+          {errors.doctorId && <p className="text-red-500 text-xs mt-1">{errors.doctorId}</p>}
         </div>
         <div className="mb-4">
           <label className="block mb-2 font-medium">Patient</label>
 
           <select
             value={patientId}
-            onChange={(e) => setPatientId(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => {
+              setPatientId(e.target.value);
+              if (errors.patientId) setErrors((prev) => ({ ...prev, patientId: null }));
+            }}
+            className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+              errors.patientId ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+            }`}
           >
             <option value="">Select Patient</option>
 
@@ -166,6 +212,7 @@ function AddAppointmentModal({
               </option>
             ))}
           </select>
+          {errors.patientId && <p className="text-red-500 text-xs mt-1">{errors.patientId}</p>}
         </div>
 
         <div className="mb-4">
@@ -174,9 +221,15 @@ function AddAppointmentModal({
           <input
             type="date"
             value={appointmentDate}
-            onChange={(e) => setAppointmentDate(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => {
+              setAppointmentDate(e.target.value);
+              if (errors.appointmentDate) setErrors((prev) => ({ ...prev, appointmentDate: null }));
+            }}
+            className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+              errors.appointmentDate ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+            }`}
           />
+          {errors.appointmentDate && <p className="text-red-500 text-xs mt-1">{errors.appointmentDate}</p>}
         </div>
 
         <div className="mb-4">
@@ -184,8 +237,13 @@ function AddAppointmentModal({
 
           <select
             value={appointmentTime}
-            onChange={(e) => setAppointmentTime(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => {
+              setAppointmentTime(e.target.value);
+              if (errors.appointmentTime) setErrors((prev) => ({ ...prev, appointmentTime: null }));
+            }}
+            className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+              errors.appointmentTime ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+            }`}
           >
             <option value="">Select Time Slot</option>
 
@@ -195,6 +253,7 @@ function AddAppointmentModal({
               </option>
             ))}
           </select>
+          {errors.appointmentTime && <p className="text-red-500 text-xs mt-1">{errors.appointmentTime}</p>}
         </div>
 
         <div className="mb-4">

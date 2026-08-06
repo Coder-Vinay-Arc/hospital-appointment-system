@@ -15,6 +15,7 @@ function AddPatientModal({
     const [phone, setPhone] = useState("");
     const [age, setAge] = useState("");
     const [gender, setGender] = useState("");
+    const [errors, setErrors] = useState({});
     
 
     useEffect(() => {
@@ -29,38 +30,61 @@ function AddPatientModal({
     setPhone("");
     setGender("");
   }
+  setErrors({});
 }, [patient]);
 
+  const validate = () => {
+    const newErrors = {};
+    if (!name || !name.trim()) {
+      newErrors.name = "Patient Name is required";
+    }
+    if (!phone || !phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^\d{10}$/.test(phone.trim())) {
+      newErrors.phone = "Phone number must be exactly 10 digits";
+    }
+    if (age === "" || age === undefined || age === null) {
+      newErrors.age = "Age is required";
+    } else if (Number(age) <= 0) {
+      newErrors.age = "Age must be greater than 0";
+    }
+    setErrors(newErrors);
+    return newErrors;
+  };
+
   const handleSubmit = async () => {
-  try {
-    const patientData = {
-      name,
-      age,
-      phone,
-      gender,
-    };
-
-    if (isEditMode) {
-  await updatePatient(patient.id, patientData);
-  toast.success("Patient updated successfully");
-  
-    } else {
-      await addPatient(patientData);
-
-      toast.success("Patient added successfully");
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      const firstError = Object.values(validationErrors)[0];
+      toast.error(firstError);
+      return;
     }
 
-    loadPatients();
-    onClose();
+    try {
+      const patientData = {
+        name: name.trim(),
+        age: Number(age),
+        phone: phone.trim(),
+        gender,
+      };
 
-  } catch (error) {
-    console.error(error);
+      if (isEditMode) {
+        await updatePatient(patient.id, patientData);
+        toast.success("Patient updated successfully");
+      } else {
+        await addPatient(patientData);
+        toast.success("Patient added successfully");
+      }
 
-    toast.error(
-      error.response?.data?.message || "Something went wrong!"
-    );
-  }
-};
+      loadPatients();
+      onClose();
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error.response?.data?.message || "Something went wrong!"
+      );
+    }
+  };
   return (
     <div
     className="fixed inset-0 bg-black/40 flex items-center justify-center"
@@ -93,10 +117,16 @@ function AddPatientModal({
   <input
     type="text"
     value={name}
-    onChange={(e) => setName(e.target.value)}
+    onChange={(e) => {
+      setName(e.target.value);
+      if (errors.name) setErrors((prev) => ({ ...prev, name: null }));
+    }}
     placeholder="Enter name"
-    className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+    className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+      errors.name ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+    }`}
   />
+  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
 </div>
 
 <div className="mb-4">
@@ -107,10 +137,16 @@ function AddPatientModal({
   <input
     type="number"
     value={age}
-    onChange={(e) => setAge(e.target.value)}
+    onChange={(e) => {
+      setAge(e.target.value);
+      if (errors.age) setErrors((prev) => ({ ...prev, age: null }));
+    }}
     placeholder="Enter age"
-    className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+    className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+      errors.age ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+    }`}
   />
+  {errors.age && <p className="text-red-500 text-xs mt-1">{errors.age}</p>}
 </div>
 
 <div className="mb-4">
@@ -121,10 +157,16 @@ function AddPatientModal({
   <input
     type="tel"
     value={phone}
-    onChange={(e) => setPhone(e.target.value)}
+    onChange={(e) => {
+      setPhone(e.target.value);
+      if (errors.phone) setErrors((prev) => ({ ...prev, phone: null }));
+    }}
     placeholder="Enter phone no"
-    className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+    className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+      errors.phone ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+    }`}
   />
+  {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
 </div>
 
 <div className="mb-4">

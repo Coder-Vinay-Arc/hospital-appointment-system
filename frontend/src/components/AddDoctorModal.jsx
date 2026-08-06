@@ -14,6 +14,7 @@ function AddDoctorModal({
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [specialization, setSpecialization] = useState("");
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
   if (doctor) {
@@ -27,38 +28,56 @@ function AddDoctorModal({
     setPhone("");
     setSpecialization("");
   }
+  setErrors({});
 }, [doctor]);
 
+  const validate = () => {
+    const newErrors = {};
+    if (!name || !name.trim()) {
+      newErrors.name = "Doctor Name is required";
+    }
+    if (!phone || !phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^\d{10}$/.test(phone.trim())) {
+      newErrors.phone = "Phone number must be exactly 10 digits";
+    }
+    setErrors(newErrors);
+    return newErrors;
+  };
+
   const handleSubmit = async () => {
-  try {
-    const doctorData = {
-      name,
-      email,
-      phone,
-      specialization,
-    };
-
-    if (isEditMode) {
-  await updateDoctor(doctor.id, doctorData);
-  toast.success("Doctor updated successfully");
-
-    } else {
-      await addDoctor(doctorData);
-
-      toast.success("Doctor added successfully");
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      const firstError = Object.values(validationErrors)[0];
+      toast.error(firstError);
+      return;
     }
 
-    loadDoctors();
-    onClose();
+    try {
+      const doctorData = {
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        specialization: specialization.trim(),
+      };
 
-  } catch (error) {
-    console.error(error);
+      if (isEditMode) {
+        await updateDoctor(doctor.id, doctorData);
+        toast.success("Doctor updated successfully");
+      } else {
+        await addDoctor(doctorData);
+        toast.success("Doctor added successfully");
+      }
 
-    toast.error(
-      error.response?.data?.message || "Something went wrong!"
-    );
-  }
-};
+      loadDoctors();
+      onClose();
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error.response?.data?.message || "Something went wrong!"
+      );
+    }
+  };
   return (
     <div
     className="fixed inset-0 bg-black/40 flex items-center justify-center"
@@ -91,10 +110,16 @@ function AddDoctorModal({
   <input
     type="text"
     value={name}
-    onChange={(e) => setName(e.target.value)}
+    onChange={(e) => {
+      setName(e.target.value);
+      if (errors.name) setErrors((prev) => ({ ...prev, name: null }));
+    }}
     placeholder="Enter name"
-    className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+    className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+      errors.name ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+    }`}
   />
+  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
 </div>
 
 <div className="mb-4">
@@ -119,10 +144,16 @@ function AddDoctorModal({
   <input
     type="tel"
     value={phone}
-    onChange={(e) => setPhone(e.target.value)}
+    onChange={(e) => {
+      setPhone(e.target.value);
+      if (errors.phone) setErrors((prev) => ({ ...prev, phone: null }));
+    }}
     placeholder="Enter phone no"
-    className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+    className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+      errors.phone ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+    }`}
   />
+  {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
 </div>
 
 <div className="mb-4">
