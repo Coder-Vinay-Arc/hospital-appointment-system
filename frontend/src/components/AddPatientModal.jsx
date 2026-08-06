@@ -1,54 +1,55 @@
 import { FaTimes } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { addDoctor, updateDoctor } from "../services/doctorService";
+import { addPatient, updatePatient } from "../services/patientService";
 import { toast } from "react-toastify";
 
 
-function AddDoctorModal({
+function AddPatientModal({
   onClose,
-  loadDoctors,
-  doctor,
+  loadPatients,
+  patient,
   isEditMode,
 }) {
     const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [specialization, setSpecialization] = useState("");
+    const [age, setAge] = useState("");
+    const [gender, setGender] = useState("");
+    
 
     useEffect(() => {
-  if (doctor) {
-    setName(doctor.name);
-    setEmail(doctor.email);
-    setPhone(doctor.phone);
-    setSpecialization(doctor.specialization);
+  if (patient) {
+    setName(patient.name);
+    setAge(patient.age);
+    setPhone(patient.phone);
+    setGender(patient.gender);
   } else {
     setName("");
-    setEmail("");
+    setAge("");
     setPhone("");
-    setSpecialization("");
+    setGender("");
   }
-}, [doctor]);
+}, [patient]);
 
   const handleSubmit = async () => {
   try {
-    const doctorData = {
+    const patientData = {
       name,
-      email,
+      age,
       phone,
-      specialization,
+      gender,
     };
 
     if (isEditMode) {
-  await updateDoctor(doctor.id, doctorData);
-  toast.success("Doctor updated successfully");
-
+  await updatePatient(patient.id, patientData);
+  toast.success("Patient updated successfully");
+  
     } else {
-      await addDoctor(doctorData);
+      await addPatient(patientData);
 
-      toast.success("Doctor added successfully");
+      toast.success("Patient added successfully");
     }
 
-    loadDoctors();
+    loadPatients();
     onClose();
 
   } catch (error) {
@@ -72,7 +73,7 @@ function AddDoctorModal({
 
         <div className="flex justify-between items-center mb-6">
     <h2 className="text-2xl font-bold">
-    {isEditMode ? "Update Doctor" : "Add Doctor"}
+    {isEditMode ? "Update Patient" : "Add Patient"}
 </h2>
 
     <button
@@ -85,7 +86,7 @@ function AddDoctorModal({
 
         <div className="mb-4">
   <label className="block mb-2 font-medium">
-    Doctor Name
+    Patient Name
   </label>
 
   <input
@@ -99,14 +100,14 @@ function AddDoctorModal({
 
 <div className="mb-4">
   <label className="block mb-2 font-medium">
-    Email
+    Age
   </label>
 
   <input
-    type="email"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    placeholder="Enter email"
+    type="number"
+    value={age}
+    onChange={(e) => setAge(e.target.value)}
+    placeholder="Enter age"
     className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
   />
 </div>
@@ -127,16 +128,19 @@ function AddDoctorModal({
 
 <div className="mb-4">
   <label className="block mb-2 font-medium">
-    Specialization
+    Gender
   </label>
 
-  <input
-    type="text"
-    value={specialization}
-    onChange={(e) => setSpecialization(e.target.value)}
-    placeholder="Enter specialization"
+  <select
+    value={gender}
+    onChange={(e) => setGender(e.target.value)}
     className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
-  />
+  >
+    <option value="">Select Gender</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="Other">Other</option>
+  </select>
 </div>
 
 
@@ -156,4 +160,4 @@ function AddDoctorModal({
   );
 }
 
-export default AddDoctorModal;
+export default AddPatientModal;
