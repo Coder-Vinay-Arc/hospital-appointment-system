@@ -10,6 +10,8 @@ import org.springframework.validation.FieldError;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -35,5 +37,17 @@ public class GlobalExceptionHandler {
             ResourceNotFoundException ex) {
 
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DoctorDeletionException.class)
+    public ResponseEntity<ApiError> handleDoctorDeletionException(
+            DoctorDeletionException ex) {
+
+        ApiError error = new ApiError(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 }

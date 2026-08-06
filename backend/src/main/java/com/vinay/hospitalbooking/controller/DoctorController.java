@@ -3,6 +3,7 @@ package com.vinay.hospitalbooking.controller;
 import com.vinay.hospitalbooking.entity.Doctor;
 import com.vinay.hospitalbooking.service.DoctorService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +25,11 @@ public class DoctorController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteDoctor(@PathVariable Long id) {
-        return doctorService.deleteDoctor(id);
+    public ResponseEntity<String> deleteDoctor(@PathVariable Long id) {
+
+        doctorService.deleteDoctor(id);
+
+        return ResponseEntity.ok("Doctor deleted successfully");
     }
 
     @GetMapping("/{id}")

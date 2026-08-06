@@ -1,5 +1,8 @@
 package com.vinay.hospitalbooking.service;
 
+import com.vinay.hospitalbooking.exception.DoctorDeletionException;
+import com.vinay.hospitalbooking.exception.ResourceNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.vinay.hospitalbooking.entity.Doctor;
 import com.vinay.hospitalbooking.repository.DoctorRepository;
@@ -22,14 +25,24 @@ public class DoctorService {
         return doctorRepository.findAll();
     }
 
-    public String deleteDoctor(Long id) {
 
-        if (doctorRepository.existsById(id)) {
-            doctorRepository.deleteById(id);
-            return "Doctor deleted successfully";
+    public void deleteDoctor(Long id) {
+
+        if (!doctorRepository.existsById(id)) {
+            throw new ResourceNotFoundException(
+                    "Doctor not found with id: " + id
+            );
         }
 
-        return "Doctor not found";
+        try {
+            doctorRepository.deleteById(id);
+
+        } catch (DataIntegrityViolationException e) {
+
+            throw new DoctorDeletionException(
+                    "Cannot delete doctor because appointments exist."
+            );
+        }
     }
 
     public Doctor getDoctorById(Long id) {
