@@ -5,7 +5,7 @@ A full-stack Hospital Appointment Management System built using **React, Spring 
 ## 🚀 Live Demo
 
 - **Frontend:** https://hospital-appointment-system-beryl.vercel.app
-- **Backend:** <YOUR_BACKEND_URL>
+- **Backend:**  https://hospital-appointment-system-1-oxge.onrender.com
 
 ---
 
@@ -124,19 +124,23 @@ npm run dev
 
 ### Dashboard
 
-> *(Add dashboard screenshot here)*
+<img width="1887" height="912" alt="image" src="https://github.com/user-attachments/assets/b24edba7-076c-4f37-89b1-9d9084c761dc" />
+
 
 ### Doctors
 
-> *(Add doctors page screenshot here)*
+<img width="1912" height="913" alt="image" src="https://github.com/user-attachments/assets/e65655e8-b97e-4caf-b7bf-674b42dd7b71" />
+
 
 ### Patients
 
-> *(Add patients page screenshot here)*
+<img width="1917" height="907" alt="image" src="https://github.com/user-attachments/assets/17bede04-906c-482c-8582-3c1187ea798e" />
+
 
 ### Appointments
 
-> *(Add appointments page screenshot here)*
+<img width="1907" height="912" alt="image" src="https://github.com/user-attachments/assets/32311950-7a87-48d1-84d3-8a315bd94863" />
+
 
 ---
 
@@ -159,7 +163,7 @@ npm run dev
 **Vinay Kumar Gupta**
 
 - GitHub: https://github.com/Coder-Vinay-Arc
-- LinkedIn: *(Add your LinkedIn profile)*
+- LinkedIn: https://www.linkedin.com/in/vinay-gupta-7247281ba/
 
 ---
 
