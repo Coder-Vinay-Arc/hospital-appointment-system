@@ -41,6 +41,9 @@ function AddDoctorModal({
     } else if (!/^\d{10}$/.test(phone.trim())) {
       newErrors.phone = "Phone number must be exactly 10 digits";
     }
+    if (!specialization || !specialization.trim()) {
+      newErrors.specialization = "Specialization is required";
+    }
     setErrors(newErrors);
     return newErrors;
   };
@@ -164,10 +167,16 @@ function AddDoctorModal({
   <input
     type="text"
     value={specialization}
-    onChange={(e) => setSpecialization(e.target.value)}
+    onChange={(e) => {
+      setSpecialization(e.target.value);
+      if (errors.specialization) setErrors((prev) => ({ ...prev, specialization: null }));
+    }}
     placeholder="Enter specialization"
-    className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+    className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+      errors.specialization ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+    }`}
   />
+  {errors.specialization && <p className="text-red-500 text-xs mt-1">{errors.specialization}</p>}
 </div>
 
 

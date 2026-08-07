@@ -48,6 +48,9 @@ function AddPatientModal({
     } else if (Number(age) <= 0) {
       newErrors.age = "Age must be greater than 0";
     }
+    if (!gender || !gender.trim()) {
+      newErrors.gender = "Gender is required";
+    }
     setErrors(newErrors);
     return newErrors;
   };
@@ -176,14 +179,20 @@ function AddPatientModal({
 
   <select
     value={gender}
-    onChange={(e) => setGender(e.target.value)}
-    className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+    onChange={(e) => {
+      setGender(e.target.value);
+      if (errors.gender) setErrors((prev) => ({ ...prev, gender: null }));
+    }}
+    className={`w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 ${
+      errors.gender ? "border-red-500 focus:ring-red-500" : "focus:ring-blue-500"
+    }`}
   >
     <option value="">Select Gender</option>
     <option value="Male">Male</option>
     <option value="Female">Female</option>
     <option value="Other">Other</option>
   </select>
+  {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
 </div>
 
 
