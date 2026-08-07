@@ -9,6 +9,9 @@ A full-stack Hospital Appointment Management System built using **React, Spring 
 
 ---
 
+## 📝 Note
+- Note: The backend is hosted on the free tier of Render. The first request may take 30–60 seconds while the server wakes up.
+
 ## ✨ Features
 
 ### 📊 Dashboard
